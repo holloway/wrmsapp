@@ -1,0 +1,35 @@
+body {
+	background: #dddddd;
+}
+
+#page_login {
+	padding: 230px 0px 10px 0px;
+    background: url("../img/wrms-worm.png") no-repeat;
+    margin-top:10px;
+}
+
+#page_login .form {
+	padding: 0px;
+}
+
+#page_login .form > div {
+	padding: 0px 20px 0px 10px;
+	width:90%;
+}
+
+#page_login input[type=text],
+#page_login input[type=password],
+#page_login input[type=submit] {
+	width:100%;
+	font-size:inherit;
+}
+
+#page_login .submit {
+	padding-top: 10px;
+}
+
+
+#page_login .form #wrms-app-version {
+	padding-top:5px;
+	text-align:center;
+}

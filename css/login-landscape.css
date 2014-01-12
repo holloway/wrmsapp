@@ -1,0 +1,53 @@
+body {
+	background: #dddddd;
+	font-size:xx-large;	
+	width:100%;
+}
+
+#page_login {
+	max-width:600px;
+	margin: 10px auto;
+    background: url("../img/wrms-worm.png") no-repeat;
+    min-height:400px;
+}
+
+#page_login .worm {
+	padding: 30px 10px 0px 10px;
+}
+
+#page_login .form {
+	padding:0px;
+	margin:0px;
+}
+
+#page_login .form .row {
+	margin-left:140px;
+	margin-right:50px;
+}
+
+#page_login input[type=text],
+#page_login input[type=password],
+#page_login input[type=submit] {
+	font-size:xx-large;
+}
+
+#page_login input[type=text],
+#page_login input[type=password] {
+	width:100%;
+}
+
+#page_login .form > .submit {
+	text-align:right;
+	padding-left:80px;
+	margin-right:40px;
+}
+
+#page_login input[type=submit] {
+	width:100%;
+}
+
+#wrms-app-version {
+	padding-top:0.5em;
+    margin-left:200px;
+    text-align:center;
+}

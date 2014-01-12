@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WRMS</title>
+	<meta name="viewport" content="initial-scale=1 maximum-scale=1 minimum-scale=1 user-scalable=1"/>
+	<!-- WARNING changing user-scalable to anything else
+		 breaks ability to tap <select> in Android 2.2.1 -->
+	<script type="text/javascript" src="js/cordova-2.4.0.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/handlebars.js"></script>
+	<script type="text/javascript" src="js/overthrow.js"></script>
+	<script type="text/javascript" src="js/ticket-wrms.js"></script>
+	<script type="text/javascript" src="js/wrms-app-version.js"></script>
+	<script type="text/javascript" src="js/login_status.js"></script>
+	<link type="text/css" rel="stylesheet" href="css/ticket.css">
+	<script type="text/x-mustache" id="search_results_template">
+		<ul class="search_results">
+			{{#body}}
+				<li class="ticket" id="ticket_{{request_id}}">
+					<span class="wrms_ticket_id">#{{request_id}}</span>
+					{{description}}
+				</li>
+			{{/body}}
+			{{^body}}
+				<li class="no-results"><b>No results</b></li>
+			{{/body}}
+		</ul>
+	</script>
+	<script type="text/x-mustache" id="ticket_template">
+		{{#results}}
+			<div class="ticket">
+				<div class="right-meta">
+					<span class="request_id">#{{request_id}}</span>
+					<label class="email_changes">Quiet update? <input type="checkbox" name="send_no_email" class="send_no_email" {{{send_no_email_checked_attribute}}}>
+						<span>
+							<span class="yes button">YES</span>
+							<span class="no button">NO</span>
+						</span>
+					</label>
+				</div>
+				<div id="loading">loading</div>
+				<h1 class="brief">{{brief}}</h1>
+				<p class="detailed">{{{detailed_html}}}</p>
+				<textarea class="detailed" placeholder="details">{{{detailed}}}</textarea>
+				<input id="old_last_activity" name="old_last_activity" value="{{old_last_activity}}" type="hidden">
+
+				<p class="select_row division_row">
+					<label for="status_code"><span class="text-indent">Status: </span><span class="button"></span></label>
+					<select name="status_code" id="status_code">
+						{{#select_status_code}}
+							<option value="{{value}}" {{{selected_attribute_string}}}>
+								{{text}}
+							</option>
+						{{/select_status_code}}
+					</select>
+				</p>
+				<p class="select_row division_row">
+					<label for="org_code"><span class="text-indent">Organisation: </span><span class="button"></span></label>
+					<select name="org_code" id="org_code">
+						{{#select_org_code}}
+							<option value="{{value}}" {{{selected_attribute_string}}}>
+								{{text}}
+							</option>
+						{{/select_org_code}}
+					</select>
+				</p>
+				<p class="select_row division_row">
+					<label for="requester_id"><span class="text-indent">Person: </span><span class="button"></span></label>
+					<select name="requester_id" id="requester_id">
+						<option value=""></option>
+					</select>
+				</p>
+				<p class="select_row division_row">
+					<label for="system_id"><span class="text-indent">System: </span><span class="button"></span></label>
+					<select name="system_id" id="system_id">
+						{{#select_system_id}}
+							<option value="{{value}}" {{{selected_attribute_string}}}>
+								{{text}}
+							</option>
+						{{/select_system_id}}
+					</select>
+				</p>
+
+				<p class="allocated_to division_row">
+					<span class="text-indent">Allocated to: </span>
+					{{#allocated_to}}
+						<a href="#{{id}}" class="deallocate-user">{{fullname}} <span>&times;</span></a> 
+					{{/allocated_to}}
+				</p>
+				<p class="select_row add_allocatable">
+					<span class="text-indent"> </span>
+					<label for="allocatable" class="button">Select person to allocate <span class="button"></span></label>
+					<select name="allocatable" id="allocatable">
+						<option value="(none)">Choose person</option>
+						{{#select_allocated_to}}
+							<option value="{{value}}">
+								{{text}}
+							</option>
+						{{/select_allocated_to}}
+					</select>
+				</p>
+
+				<p class="subscribed_to division_row">
+					<span class="text-indent">Subscribed: </span>
+					{{#subscribed_to}}
+						<a href="#{{id}}" class="unsubscribe-user">{{fullname}} <span>&times;</span></a> 
+					{{/subscribed_to}}
+				</p>
+				<p class="select_row add_allocatable">
+					<span class="text-indent"> </span>
+					<label for="subscribable" class="button">Select person to subscribe <span class="button"></span></label>
+					<select name="subscribable" id="subscribable">
+						<option value="(none)">Choose person</option>
+						{{#select_subscribed_to}}
+							<option value="{{value}}">
+								{{text}}
+							</option>
+						{{/select_subscribed_to}}
+					</select>
+				</p>
+				
+				<div class="relationships"><i>loading...</i></div>
+				<div class="comments_and_attachments"><i>loading...</i></div>
+
+				<div class="notes">
+					<textarea name="note_detail" id="note_detail" placeholder="Add note"></textarea>
+				</div>
+				<!--
+				<div class="meta">
+					<p>By {{created_by_fullname}}<br>for {{requester_id_fullname}}</p>
+					<p>{{request_type_desc}}</p>
+					<p>{{interested_users_fullnames}}</p>
+					<p>Urgency: {{urgency_desc}}</p>
+					<p>Importance: {{importance_desc}}</p>
+					<p>
+						Hours: predicted {{approved_hours}}/{{unapproved_hours}},
+						actual: {{hours}} (+{{hours_over_hours_approved}})
+					</p>
+				</div>
+				-->
+				<div class="credits">
+					<div class="stripe"></div>
+					<div class="brought-to-you-by">
+						Brought to you by
+					</div>
+					<div class="wrms-app-version">WRMS App v.{{wrms-app-version}}</div>
+				</div>
+			</div>
+		{{/results}}
+	</script>
+
+	<script type="text/x-mustache" id="options_template">
+		{{#options}}
+			<option value="{{value}}" {{{selected_attribute_string}}}>{{text}}</option>
+		{{/options}}
+	</script>
+	<script type="text/x-mustache" id="history_template">
+		<ul class="history_results">
+			{{#items}}
+				<li class="ticket" id="ticket_{{wrms_ticket_id}}">
+					<span class="wrms_ticket_id">#{{wrms_ticket_id}}</span>
+					{{title}}
+					<a href="#metadata" data-meta="Accessed {{smart_date}}. Updated {{formatted_date}}"></a>
+				</li>
+			{{/items}}
+		</ul>
+	</script>
+	<script type="text/x-mustache" id="ticket_relationships_template">
+		<div class="relationships">
+			<h2>Related tickets</h2>
+			{{#if results.parent}}
+				<h3>Parent tickets</h3>
+			{{/if}}
+			{{#results.parent}}
+				<div class="relationship child_wr_{{request_id}}">
+					<p><span class="button">{{status}}</span> <a href="#wr{{request_id}}"><b>{{request_id}}:</b> {{brief}}</a></p>
+				</div>
+			{{/results.parent}}
+			{{#if results.child}}
+				<h3>Child tickets</h3>
+			{{/if}}
+			{{#results.child}}
+				<div class="relationship child_wr_{{request_id}}">
+					<p><span class="button">{{status}}</span> <a href="#wr{{request_id}}"><b>{{request_id}}:</b> {{brief}}</a></p>
+				</div>
+			{{/results.child}}
+			{{^results}}
+				<p class="no-results"><b>No parent work requests.</b></p>
+			{{/results}}
+		</div>
+	</script>
+	<script type="text/x-mustache" id="ticket_comments_template">
+		<div class="comments_and_attachments">
+			<h2>Comments and attachments</h2>
+			<ul class="filterlist">
+				<li data-filterlist="(off)" class="current">Both</li>
+				<li data-filterlist="attachment">Only comments</li>
+				<li data-filterlist="comment">Only attachments</li>
+			</ul>
+			{{#results}}
+				{{#if is_comment}}
+					<div class="comment">
+						<p><b>{{fullname}} wrote:</b> {{{note_sanitised}}} <span class="formatted_date">{{formatted_date}}</span></p>
+					</div>
+				{{/if}}
+				{{#if is_attachment}}
+					<div class="attachment">
+						<p><b>{{fullname}} attached:</b> <a href="{{wrms_domain}}{{path}}" target="_blank"><tt>{{description}}</tt></a> <span class="formatted_date">{{formatted_date}}</span></p>
+					</div>
+				{{/if}}
+			{{/results}}
+			{{^results}}
+				<p class="no-results"><b>No comments or attachments.</b></p>
+			{{/results}}
+		</div>
+	</script>
+</head>
+<body>
+	<input type="checkbox" id="show_slideout_navigation" checked="checked">
+	<div id="wrapper">
+		<div id="slideout_navigation">
+        	<label class="tab" for="show_slideout_navigation"></label>
+        	<label class="header" for="show_slideout_navigation"></label>
+			<ul id="tabs">
+				<li id="search-tab" class="current"></li>
+				<li id="history-tab"></li>
+			</ul>
+			<div id="search_tab_content">
+				<input type="search" id="search_box" placeholder=" Search">
+				<div id="search_results" class="overthrow">
+				
+				</div>
+			</div>
+			<div id="history_tab_content">
+				<div id="history_results" class="overthrow"></div>
+			</div>
+		</div>
+		<a href="#logout" id="logout">Logout</a>
+		<a id="scroll-top" class="arrow-end">&#x25B2;</a>
+		<a id="scroll-bottom" class="arrow-end">&#x25BC;</a>
+        <div id="ticket">
+        	<div class="ticket">
+			</div>
+		</div>
+	</div>
+	<div id="dialog_message">
+		<div></div>
+	</div>
+</body>
+</html>
+

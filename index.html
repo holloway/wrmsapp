@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WRMS</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<script type="text/javascript" src="js/cordova-2.4.0.js"></script>
+	<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/login-wrms.js"></script>
+	<script type="text/javascript" src="js/wrms-app-version.js"></script>
+	<script type="text/javascript" src="js/login_status.js"></script>
+	<link rel="stylesheet" media="screen and (max-width: 395px)" href="css/login-portrait.css" />
+	<link rel="stylesheet" media="screen and (min-width: 396px)" href="css/login-landscape.css" />
+	<link type="text/css" rel="stylesheet" href="css/login-mobile.css">
+</head>
+<body>
+	<div id="page_login" style="display:none">
+        <div class="form">
+			<div class="username row">
+				<input id="username" placeholder="Username" type="text">
+			</div>
+			<div class="password row">
+				<input id="password" type="password" placeholder="Password">
+			</div>
+			<div class="submit row">
+				<input type="submit" class="button" value="Sign-in">
+			</div>
+			<div id="wrms-app-version">WRMS APP v.x</div>
+		</div>
+	</div>
+	<div id="loading">
+	</div>
+	<div id="dialog_message">
+		<div>Incorrect username or password</div>
+	</div>
+</body>
+</html>
